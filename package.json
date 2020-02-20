@@ -1,0 +1,17 @@
+{
+  "name": "memoapp-api-v2",
+  "version": "1.0.0",
+  "description": "Memoapp",
+  "main": "index.js",
+  "author": "MinGu Lee",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1",
+    "joi": "^14.3.1",
+    "lowdb": "^1.0.0",
+    "uuid": "^3.4.0"
+  },
+  "scripts": {
+    "start": "node ./index.js"
+  }
+}
