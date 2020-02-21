@@ -7,17 +7,20 @@ const { create, update } = require('../utils/dbUtil');
 const db = require('../models/database');
 
 router.get('/', (req, res) => {
-  const { populate } = qs.parse(req.query);
+  const { populate } = req.query;
+  const isUnpopulate = populate === 'false';
 
   const labels = db.get('labels').value();
   labels.forEach(label => {
     const memos =
       db
         .get('memos')
-        .filter({ labelId: label.id })
+        .filter(memo => {
+          return memo.labelId.find(lblId => lblId === label.id);
+        })
         .value() || [];
 
-    if (populate === false) {
+    if (isUnpopulate) {
       label.memos = memos.map(memo => memo.id);
     } else {
       label.memos = memos;
@@ -50,7 +53,10 @@ router.get('/:id', (req, res) => {
     .value();
 
   if (data) {
-    data.memos = db.get('memos').filter({ labelId: data.id }) || [];
+    data.memos =
+      db
+        .get('memos')
+        .filter(memo => memo.labelId.find(lblId => lblId === data.id)) || [];
     res.send(data);
   } else {
     res.status(500).send('invalid label id');
@@ -89,11 +95,6 @@ router.delete('/:id', (req, res) => {
   res.send(data);
 });
 
-/**
- * Add Memos to Label
- * @todo
- */
-
 router.post('/:id/memos', (req, res) => {
   const id = req.param.id;
   const { memoIds } = req.body;
@@ -102,7 +103,7 @@ router.post('/:id/memos', (req, res) => {
     memoIds.forEach(memoId => {
       db.get('memos')
         .find({ id: memoId })
-        .assign({ labelId: id })
+        .assign(data => ({ ...data, labelId: data.labelId.concat(id) }))
         .write();
     });
   }
@@ -112,8 +113,13 @@ router.post('/:id/memos', (req, res) => {
     .value();
 
   if (data) {
-    data.memos = db.get('memos').filter({ labelId: data.id }) || [];
+    data.memos =
+      db
+        .get('memos')
+        .filter(memo => memo.labelId.find(lblId => lblId === id)) || [];
     res.send(data);
+  } else {
+    res.status(500).send('unable to retrieve label data');
   }
 });
 
@@ -125,9 +131,28 @@ router.delete('/:id/memos', (req, res) => {
     memoIds.forEach(memoId => {
       db.get('memos')
         .find({ id: memoId })
-        .assign({ labelId: id })
+        .assign(data => ({
+          ...data,
+          labelId: data.labelId.filter(lblId => lblId !== id),
+        }))
         .write();
     });
+  }
+
+  const data = db
+    .get('labels')
+    .find({ id })
+    .value();
+
+  if (data) {
+    data.memos =
+      db
+        .get('memos')
+        .filter(memo => memo.labelId.find(lblId => lblId === id)) || [];
+
+    res.send(data);
+  } else {
+    res.status(500).send('unable to retrieve label data');
   }
 });
 
