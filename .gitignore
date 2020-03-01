@@ -122,4 +122,4 @@ temp/
 # End of https://www.gitignore.io/api/node,visualstudiocode
 
 ### Database file ###
-db/
+
