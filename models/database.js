@@ -3,21 +3,36 @@ const path = require('path');
 const low = require('lowdb');
 const FileSync = require('lowdb/adapters/FileSync');
 
-/**
- * Creates Database directory if it doesn't exist.
- */
-const dbDirectory = path.join(__dirname, '../db');
-if (!fs.existsSync(dbDirectory)) {
-  fs.mkdirSync(dbDirectory);
-}
+module.exports = () => {
+  const dbDirectory = path.join(__dirname, '../db');
 
-const adapter = new FileSync(path.join(__dirname, '../db/db.json'));
-const db = low(adapter);
+  /**
+   * Creates Database directory if it doesn't exist.
+   */
+  if (!fs.existsSync(dbDirectory)) {
+    fs.mkdirSync(dbDirectory);
+  }
 
-db.defaults({
-  labels: [],
-  memos: [],
-  labelsToMemos: [],
-}).write();
+  const isTest = process.env.ENVIRONMENT === 'test';
+  const fileDirectory = path.join(
+    __dirname,
+    `../db/${isTest ? 'test_db' : 'db'}.json`
+  );
 
-module.exports = db;
+  /**
+   * Test Environment Only
+   * * remove preexisting test-db file
+   */
+  if (isTest && fs.existsSync(fileDirectory)) {
+    fs.unlinkSync(fileDirectory);
+  }
+
+  const adapter = new FileSync(fileDirectory);
+  const db = low(adapter);
+
+  db.defaults({
+    labels: [],
+    memos: [],
+    labelsToMemos: [],
+  }).write();
+};

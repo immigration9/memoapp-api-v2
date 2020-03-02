@@ -4,7 +4,9 @@ const app = express();
 const labels = require('./routes/labels');
 const memos = require('./routes/memos');
 
-const db = require('./models/database');
+const initDatabase = require('./models/database');
+
+initDatabase();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
