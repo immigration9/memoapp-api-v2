@@ -69,8 +69,9 @@ module.exports = {
   deleteLabel: (req, res) => {
     const labelId = req.params.id;
 
-    const label = db
-      .get('labels')
+    const label = getLabelByLabelId(labelId);
+
+    db.get('labels')
       .remove({ id: labelId })
       .write();
 

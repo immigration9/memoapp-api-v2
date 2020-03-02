@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const createError = require('http-errors');
 const app = express();
 
 const labels = require('./routes/labels');
@@ -12,6 +13,15 @@ app.use(cors());
 
 app.use('/labels', labels);
 app.use('/memos', memos);
+
+app.use((req, res, next) => {
+  next(createError(404));
+});
+
+app.use((err, req, res, next) => {
+  res.status(err.status || 500);
+  res.send(err);
+});
 
 const port = process.env.PORT || 3000;
 
