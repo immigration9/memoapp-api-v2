@@ -29,7 +29,7 @@ function getMemoByMemoId(memoId) {
 }
 
 module.exports = {
-  getRelationByLabel,
+  getRelationByLabelId,
   getRelationByMemoId,
   getLabelByLabelId,
   getMemoByMemoId,

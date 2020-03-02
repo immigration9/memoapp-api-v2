@@ -4,6 +4,7 @@ const router = express.Router();
 const { create, update } = require('../utils/dbUtil');
 const {
   getRelationByLabelId,
+  getRelationByMemoId,
   getMemoByMemoId,
   getLabelByLabelId,
 } = require('../utils/relationUtil');
@@ -90,11 +91,13 @@ router.delete('/:id', (req, res) => {
 });
 
 router.post('/:id/memos', (req, res) => {
-  const labelId = req.param.id;
+  const labelId = req.params.id;
   const { memoIds } = req.body;
 
-  if (memoIds && memoIds.length > 0) {
-    memoIds.forEach(memoId => {
+  const parsedMemoIds = JSON.parse(memoIds);
+
+  if (parsedMemoIds && parsedMemoIds.length > 0) {
+    parsedMemoIds.forEach(memoId => {
       const relations = getRelationByMemoId(memoId);
       const exists = relations.find(relation => relation.labelId === labelId);
       if (!exists) {
@@ -104,23 +107,25 @@ router.post('/:id/memos', (req, res) => {
       }
     });
   }
-  const label = getLabelByLabelId(labelId);
 
+  const label = getLabelByLabelId(labelId);
   if (label) {
     const labelToMemo = getRelationByLabelId(label.id);
     label.memos = labelToMemo.map(item => getMemoByMemoId(item.memoId)) || [];
-    res.send(data);
+    res.send(label);
   } else {
     res.status(500).send('unable to retrieve label data');
   }
 });
 
 router.delete('/:id/memos', (req, res) => {
-  const labelId = req.param.id;
+  const labelId = req.params.id;
   const { memoIds } = req.body;
 
-  if (memoIds && memoIds.length > 0) {
-    memoIds.forEach(memoId => {
+  const parsedMemoIds = JSON.parse(memoIds);
+
+  if (parsedMemoIds && parsedMemoIds.length > 0) {
+    parsedMemoIds.forEach(memoId => {
       const relations = getRelationByMemoId(memoId);
       const exists = relations.find(relation => relation.labelId === labelId);
       if (exists) {
@@ -131,18 +136,11 @@ router.delete('/:id/memos', (req, res) => {
     });
   }
 
-  const data = db
-    .get('labels')
-    .find({ id })
-    .value();
-
-  if (data) {
-    data.memos =
-      db
-        .get('memos')
-        .filter(memo => memo.labelId.find(lblId => lblId === id)) || [];
-
-    res.send(data);
+  const label = getLabelByLabelId(labelId);
+  if (label) {
+    const labelToMemo = getRelationByLabelId(label.id);
+    label.memos = labelToMemo.map(item => getMemoByMemoId(item.memoId)) || [];
+    res.send(label);
   } else {
     res.status(500).send('unable to retrieve label data');
   }

@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const qs = require('querystring');
 
 const { create, update } = require('../utils/dbUtil');
+const { getMemoByMemoId } = require('../utils/relationUtil');
 
 const db = require('../models/database');
 
@@ -20,48 +20,50 @@ router.post('/', (req, res) => {
     res.status(500).send('must provide a valid title');
   }
 });
+
 router.get('/:id', (req, res) => {
-  const id = req.params.id;
+  const memoId = req.params.id;
 
-  const data = db
-    .get('memos')
-    .find({ id })
-    .value();
+  const memo = getMemoByMemoId(memoId);
 
-  if (data) {
-    res.send(data);
+  if (memo) {
+    res.send(memo);
   } else {
     res.status(500).send('invalid memo id');
   }
 });
 
 router.put('/:id', (req, res) => {
-  const id = req.params.id;
+  const memoId = req.params.id;
   const { title, content } = req.body;
 
   db.get('memos')
-    .find({ id })
+    .find({ id: memoId })
     .assign(update({ title, content }))
     .write();
 
-  const data = db
-    .get('memos')
-    .find({ id })
-    .value();
+  const memo = getMemoByMemoId(memoId);
 
-  if (data) {
-    res.send(data);
+  if (memo) {
+    res.send(memo);
   } else {
     res.status(500).send('unable to update memo');
   }
 });
 
 router.delete('/:id', (req, res) => {
-  const id = req.params.id;
+  const memoId = req.params.id;
 
   const data = db
     .get('memos')
-    .remove({ id })
+    .remove({ id: memoId })
+    .write();
+
+  /**
+   * Delete all relations
+   */
+  db.get('labelsToMemos')
+    .remove({ memoId })
     .write();
 
   res.send(data);
