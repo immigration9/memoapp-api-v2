@@ -7,7 +7,7 @@ const memos = require('./routes/memos');
 const db = require('./models/database');
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: false }));
 
 app.use('/labels', labels);
 app.use('/memos', memos);
