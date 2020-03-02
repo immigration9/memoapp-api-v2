@@ -17,7 +17,7 @@ const db = low(adapter);
 db.defaults({
   labels: [],
   memos: [],
-  labelToMemo: [],
+  labelsToMemos: [],
 }).write();
 
 module.exports = db;

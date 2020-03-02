@@ -1,10 +1,10 @@
-const uuidv4 = require('uuid/v4');
+const shortid = require('shortid');
 
 function create(content) {
   const timestamp = new Date().toISOString();
   return {
     ...content,
-    id: uuidv4(),
+    id: shortid.generate(),
     createdAt: timestamp,
     updatedAt: timestamp,
   };
