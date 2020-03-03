@@ -8,19 +8,7 @@ const {
 
 module.exports = {
   getLabelsList: (req, res) => {
-    const { populate } = req.query;
-    const isUnpopulate = populate === 'false';
-
     const labels = db.get('labels').value();
-    labels.forEach(label => {
-      const labelToMemo = getRelationByLabelId(label.id) || [];
-
-      if (isUnpopulate) {
-        label.memos = labelToMemo.map(item => item.memoId);
-      } else {
-        label.memos = labelToMemo.map(item => getMemoByMemoId(item.memoId));
-      }
-    });
     res.send(labels);
   },
   createLabel: (req, res) => {

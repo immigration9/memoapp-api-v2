@@ -19,6 +19,14 @@ yarn
 PORT=3000 yarn start
 ```
 
+# 현재 고려된 사항
+
+- (변경) 레이블에 메모가 추가 / 삭제될 경우, 해당 레이블에 대한 정보가 아닌, 업데이트된 메모 리스트만 가져온다.
+- (변경) 레이블 정보를 가져올 때, 별도로 메모 정보는 가져오지 않으며, 연결된 메모 카운트만 가져온다.
+- (추가) 메모 id값을 통해 relation 테이블에 있는 레이블들을 가져올 수 있다
+- (추가) 레이블 id값을 통해 relation 테이블에 있는 메모들을 가져올 수 있다.
+- (추가) 메모 / 레이블 삭제시 해당되는 relation 관계도 전부 삭제한다.
+
 # API Specifications
 
 ## [Label](#label)
@@ -569,9 +577,40 @@ Label id 값으로 해당 label에 등록되어 있는 memo들을 가져온다.
 
 ### Request Example
 
+GET /labels/z88EVleY/memos
+
 ### Response
 
+- List of memo objects
+
+| Level1    |
+| --------- |
+| id        |
+| updatedAt |
+| createdAt |
+| title     |
+| content   |
+
 ### Response Example
+
+```json
+[
+  {
+    "title": "memo_01",
+    "content": "memo_01_content",
+    "id": "qhnb909u",
+    "createdAt": "2020-03-02T00:49:06.408Z",
+    "updatedAt": "2020-03-02T00:49:06.408Z"
+  },
+  {
+    "title": "memo_02",
+    "content": "memo_02_content",
+    "id": "x_Uuv-D-",
+    "createdAt": "2020-03-02T00:49:19.917Z",
+    "updatedAt": "2020-03-02T00:49:19.917Z"
+  }
+]
+```
 
 ## <span id="relation-label-by-memo">Get Labels by Memo</span>
 
@@ -593,9 +632,37 @@ Memo id 값으로 해당 memo에 등록되어 있는 label들을 가져온다.
 
 ### Request Example
 
+GET /memos/qhnb909u/labels
+
 ### Response
 
+- List of label objects
+
+| Level1    |
+| --------- |
+| id        |
+| updatedAt |
+| createdAt |
+| title     |
+
 ### Response Example
+
+```json
+[
+  {
+    "title": "label_01_fixed",
+    "id": "z88EVleY",
+    "createdAt": "2020-03-02T00:46:17.247Z",
+    "updatedAt": "2020-03-02T00:48:13.956Z"
+  },
+  {
+    "title": "label_02",
+    "id": "N_7_c9Tn",
+    "createdAt": "2020-03-02T00:46:31.531Z",
+    "updatedAt": "2020-03-02T00:46:31.531Z"
+  }
+]
+```
 
 ## <span id="relation-add-memos">Add Memos to Label</span>
 
@@ -631,45 +698,35 @@ POST /labels/jSxmk9ae/memos
 
 #### Response
 
-- A updated label object
+- An updated list of memos related to the label
 
-| Level1    | Level2    |
-| --------- | --------- |
-| \_id      |
+| Level1    |
+| --------- |
+| id        |
 | updatedAt |
 | createdAt |
 | title     |
-| memos     | \_id      |
-|           | updatedAt |
-|           | createdAt |
-|           | title     |
-|           | content   |
+| content   |
 
 ### Response Example
 
 ```json
-{
-  "_id": "5afbee91141592fc9850ae38",
-  "updatedAt": "2018-05-16T08:44:56.916Z",
-  "createdAt": "2018-05-16T08:40:49.193Z",
-  "title": "titleUpdated",
-  "memos": [
-    {
-      "_id": "5afbe6a12c7caff319d454d8",
-      "updatedAt": "2018-05-16T08:07:47.688Z",
-      "createdAt": "2018-05-16T08:06:57.499Z",
-      "title": "memo1",
-      "content": "memo1 content"
-    },
-    {
-      "_id": "5afbe6a22c7caff319d454d9",
-      "updatedAt": "2018-05-16T08:07:55.700Z",
-      "createdAt": "2018-05-16T08:06:58.040Z",
-      "title": "memo2",
-      "content": "memo3 content"
-    }
-  ]
-}
+[
+  {
+    "title": "memo_01",
+    "content": "memo_01_content",
+    "id": "qhnb909u",
+    "createdAt": "2020-03-02T00:49:06.408Z",
+    "updatedAt": "2020-03-02T00:49:06.408Z"
+  },
+  {
+    "title": "memo_02",
+    "content": "memo_02_content",
+    "id": "x_Uuv-D-",
+    "createdAt": "2020-03-02T00:49:19.917Z",
+    "updatedAt": "2020-03-02T00:49:19.917Z"
+  }
+]
 ```
 
 ## <span id="relation-remove-memos">Remove Memos</span>
@@ -680,9 +737,9 @@ POST /labels/jSxmk9ae/memos
 
 #### Path variable
 
-| Name | Description           |
-| ---- | --------------------- |
-| ID   | Id of label to remove |
+| Name | Description                      |
+| ---- | -------------------------------- |
+| ID   | Id of label to remove memos from |
 
 #### Parameters
 
@@ -692,46 +749,36 @@ POST /labels/jSxmk9ae/memos
 
 #### Request Example
 
-DELETE /labels/5afbee91141592fc9850ae38/memos
+DELETE /labels/z88EVleY/memos
 
 ```json
 {
-  "memoIds": ["5afbe6a12c7caff319d454d8"]
+  "memoIds": ["qhnb909u"]
 }
 ```
 
 #### Response
 
-- A deleted label object
+- An updated list of memos related to the label
 
-| Level1    | Level2    |
-| --------- | --------- |
-| \_id      |
+| Level1    |
+| --------- |
+| id        |
 | updatedAt |
 | createdAt |
 | title     |
-| memos     | \_id      |
-|           | updatedAt |
-|           | createdAt |
-|           | title     |
-|           | content   |
+| content   |
 
 ### Response Example
 
 ```json
-{
-  "_id": "5afbee91141592fc9850ae38",
-  "updatedAt": "2018-05-16T08:53:19.084Z",
-  "createdAt": "2018-05-16T08:40:49.193Z",
-  "title": "titleUpdated",
-  "memos": [
-    {
-      "_id": "5afbe6a12c7caff319d454d8",
-      "updatedAt": "2018-05-16T08:07:47.688Z",
-      "createdAt": "2018-05-16T08:06:57.499Z",
-      "title": "memo1",
-      "content": "memo1 content"
-    }
-  ]
-}
+[
+  {
+    "title": "memo_02",
+    "content": "memo_02_content",
+    "id": "x_Uuv-D-",
+    "createdAt": "2020-03-02T00:49:19.917Z",
+    "updatedAt": "2020-03-02T00:49:19.917Z"
+  }
+]
 ```

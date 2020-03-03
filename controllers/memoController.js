@@ -3,6 +3,11 @@ const { getMemoByMemoId } = require('../utils/relationUtil');
 const db = require('../models/database');
 
 module.exports = {
+  getMemosList: (req, res) => {
+    const memos = db.get('memos').value();
+
+    res.send(memos);
+  },
   createMemo: (req, res) => {
     const { title, content } = req.body;
 
@@ -48,8 +53,9 @@ module.exports = {
   deleteMemo: (req, res) => {
     const memoId = req.params.id;
 
-    const data = db
-      .get('memos')
+    const memo = getMemoByMemoId(memoId);
+
+    db.get('memos')
       .remove({ id: memoId })
       .write();
 
@@ -60,6 +66,6 @@ module.exports = {
       .remove({ memoId })
       .write();
 
-    res.send(data);
+    res.send(memo);
   },
 };
