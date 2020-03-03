@@ -41,8 +41,8 @@ PORT=3000 yarn start
 
 - [Get Memos by Label](#relation-memo-by-label)
 - [Get Labels by Memo](#relation-label-by-memo)
-- [Add Memos to Label](#add-memos)
-- [Remove Memos from Label](#remove-memos)
+- [Add Memos to Label](#relation-add-memos)
+- [Remove Memos from Label](#relation-remove-memos)
 
 # <span id="label">Label</span>
 
@@ -196,7 +196,7 @@ GET /labels/x36LYo-9
 
 ### Summary
 
-특정 레이블 정보를 업데이트한다
+특정 레이블 정보를 수정한다
 
 ### URL
 
@@ -345,6 +345,10 @@ GET /memos
 
 ## <span id="memo-create">Create</span>
 
+### Summary
+
+새로운 메모를 생성한다
+
 #### URL
 
 - POST /memos
@@ -362,8 +366,8 @@ POST /memos
 
 ```json
 {
-  "title": "titleExample",
-  "content": "contentExample"
+  "title": "memo_01",
+  "content": "memo_01_content"
 }
 ```
 
@@ -373,7 +377,7 @@ POST /memos
 
 | Level1    |
 | --------- |
-| \_id      |
+| id        |
 | updatedAt |
 | createdAt |
 | title     |
@@ -383,37 +387,43 @@ POST /memos
 
 ```json
 {
-  "updatedAt": "2018-05-16T08:14:26.388Z",
-  "createdAt": "2018-05-16T08:14:26.388Z",
-  "title": "titleExample",
-  "_id": "5afbe8622c7caff319d454df",
-  "content": "contentExample"
+  "title": "memo_01",
+  "content": "memo_01_content",
+  "id": "cYdCczSy",
+  "createdAt": "2020-03-03T00:08:21.065Z",
+  "updatedAt": "2020-03-03T00:08:21.065Z"
 }
 ```
 
 ## <span id="memo-get">Get</span>
 
-#### URL
+### Summary
+
+특정 메모 정보를 가져온다
+
+### URL
 
 - GET /memos/:id
+
+### Parameters
 
 #### Path variable
 
 | Name | Description       |
 | ---- | ----------------- |
-| ID   | Id of memo to get |
+| id   | Id of memo to get |
 
-#### Request Example
+### Request Example
 
-GET /memos/5afbe8622c7caff319d454df
+GET /memos/cYdCczSy
 
-#### Response
+### Response
 
 - A requested memo object matched to a given ID
 
 | Level1    |
 | --------- |
-| \_id      |
+| id        |
 | updatedAt |
 | createdAt |
 | title     |
@@ -423,51 +433,57 @@ GET /memos/5afbe8622c7caff319d454df
 
 ```json
 {
-  "_id": "5afbe8622c7caff319d454df",
-  "updatedAt": "2018-05-16T08:14:26.388Z",
-  "createdAt": "2018-05-16T08:14:26.388Z",
-  "title": "titleExample",
-  "content": "contentExample"
+  "title": "memo_01",
+  "content": "memo_01_content",
+  "id": "cYdCczSy",
+  "createdAt": "2020-03-03T00:08:21.065Z",
+  "updatedAt": "2020-03-03T00:08:21.065Z"
 }
 ```
 
 ## <span id="memo-update">Update</span>
 
+### Summary
+
+특정 메모 정보를 수정한다
+
 #### URL
 
 - PUT /memos/:id
+
+### Parameters
 
 #### Path variable
 
 | Name | Description          |
 | ---- | -------------------- |
-| ID   | Id of memo to delete |
+| id   | Id of memo to delete |
 
-#### Parameters
+#### Request Body
 
 | Level1  | Required | Default | Description     |
 | ------- | -------- | ------- | --------------- |
 | title   | X        | -       | title of memo   |
 | content | X        | -       | content of memo |
 
-#### Request Example
+### Request Example
 
-PUT /memos/5afbe8622c7caff319d454df
+PUT /memos/cYdCczSy
 
 ```json
 {
-  "title": "titleUpdated",
-  "content": "contentUpdated"
+  "title": "memo_01_fixed",
+  "content": "memo_01_content_fixed"
 }
 ```
 
-#### Response
+### Response
 
 - A updated memo object
 
 | Level1    |
 | --------- |
-| \_id      |
+| id        |
 | updatedAt |
 | createdAt |
 | title     |
@@ -477,29 +493,35 @@ PUT /memos/5afbe8622c7caff319d454df
 
 ```json
 {
-  "_id": "5afbe8622c7caff319d454df",
-  "updatedAt": "2018-05-16T08:29:46.433Z",
-  "createdAt": "2018-05-16T08:14:26.388Z",
-  "title": "titleUpdated",
-  "content": "contentUpdated"
+  "id": "cYdCczSy",
+  "title": "memo_01_fixed",
+  "content": "memo_01_content_fixed",
+  "createdAt": "2020-03-03T00:08:21.065Z",
+  "updatedAt": "2020-03-03T00:43:35.220Z"
 }
 ```
 
 ## <span id="memo-delete">Delete</span>
 
+### Summary
+
+특정 메모를 삭제한다
+
 #### URL
 
 - DELETE /memos/:id
+
+### Parameters
 
 #### Path variable
 
 | Name | Description          |
 | ---- | -------------------- |
-| ID   | Id of memo to remove |
+| id   | Id of memo to remove |
 
 #### Request Example
 
-DELETE /memos/5afbe8622c7caff319d454df
+DELETE /memos/cYdCczSy
 
 #### Response
 
@@ -507,7 +529,7 @@ DELETE /memos/5afbe8622c7caff319d454df
 
 | Level1    |
 | --------- |
-| \_id      |
+| id        |
 | updatedAt |
 | createdAt |
 | title     |
@@ -517,27 +539,79 @@ DELETE /memos/5afbe8622c7caff319d454df
 
 ```json
 {
-  "_id": "5afbe8622c7caff319d454df",
-  "updatedAt": "2018-05-16T08:29:46.433Z",
-  "createdAt": "2018-05-16T08:14:26.388Z",
-  "title": "titleExample",
-  "content": "contentExample"
+  "title": "memo_01_fixed",
+  "content": "memo_01_content_fixed",
+  "id": "cYdCczSy",
+  "createdAt": "2020-03-03T00:08:21.065Z",
+  "updatedAt": "2020-03-03T00:43:35.220Z"
 }
 ```
 
 # <span id="relation">Relation</span>
 
-## <span id="label-add-memos">Add Memos</span>
+## <span id="relation-memo-by-label">Get Memos by Label</span>
 
-#### URL
+### Summary
+
+Label id 값으로 해당 label에 등록되어 있는 memo들을 가져온다.
+
+### URL
+
+- GET /labels/:id/memos
+
+### Parameters
+
+#### Path Variable
+
+| Name | Description |
+| ---- | ----------- |
+| id   | Id of label |
+
+### Request Example
+
+### Response
+
+### Response Example
+
+## <span id="relation-label-by-memo">Get Labels by Memo</span>
+
+### Summary
+
+Memo id 값으로 해당 memo에 등록되어 있는 label들을 가져온다.
+
+### URL
+
+- GET /memos/:id/labels
+
+### Parameters
+
+#### Path Variable
+
+| Name | Description |
+| ---- | ----------- |
+| id   | Id of memo  |
+
+### Request Example
+
+### Response
+
+### Response Example
+
+## <span id="relation-add-memos">Add Memos to Label</span>
+
+### Summary
+
+Label에 memo들을 등록한다.
+
+### URL
 
 - POST /labels/:id/memos
 
 #### Path variable
 
-| Name | Description        |
-| ---- | ------------------ |
-| ID   | Id of label to add |
+| Name | Description                 |
+| ---- | --------------------------- |
+| id   | Id of label to add memos to |
 
 #### Parameters
 
@@ -547,11 +621,11 @@ DELETE /memos/5afbe8622c7caff319d454df
 
 #### Request Example
 
-POST /labels/5afbee91141592fc9850ae38/memos
+POST /labels/jSxmk9ae/memos
 
 ```json
 {
-  "memoIds": ["5afbe6a12c7caff319d454d8", "5afbe6a22c7caff319d454d9"]
+  "memoIds": ["qhnb909u", "x_Uuv-D-"]
 }
 ```
 
@@ -598,7 +672,7 @@ POST /labels/5afbee91141592fc9850ae38/memos
 }
 ```
 
-## <span id="label-remove-memos">Remove Memos</span>
+## <span id="relation-remove-memos">Remove Memos</span>
 
 #### URL
 
