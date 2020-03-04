@@ -2,7 +2,11 @@
 
 NodeJS, ExpressJS RESTful MemoApp API.
 
-Please note that the application is _NOT_ designed to carefully take exceptions into account.
+- 본 프로젝트는 개발 환경으로만 사용할 것
+
+# Development Environment
+
+해당 프로젝트는 NodeJS 12.14.1 버전에서 개발되었음.
 
 # DB
 
@@ -26,6 +30,10 @@ PORT=3000 yarn start
 - (추가) 메모 id값을 통해 relation 테이블에 있는 레이블들을 가져올 수 있다
 - (추가) 레이블 id값을 통해 relation 테이블에 있는 메모들을 가져올 수 있다.
 - (추가) 메모 / 레이블 삭제시 해당되는 relation 관계도 전부 삭제한다.
+
+# 현재 추가 필요한 사항
+
+- 레이블에 메모 추가 / 삭제시에는 레이블 정보를 리턴하는 것으로
 
 # API Specifications
 
@@ -70,7 +78,7 @@ GET /labels
 
 ### Response
 
-- A list of all label objects
+- 레이블 리스트 전체
 
 | Level1    |
 | --------- |
@@ -132,7 +140,7 @@ POST /labels
 
 ### Response
 
-- A newly created label object
+- 새롭게 생성된 레이블 정보
 
 | Level1    |
 | --------- |
@@ -178,7 +186,7 @@ GET /labels/x36LYo-9
 
 ### Response
 
-- A requested label object matched to a given ID
+- 특정 id값에 해당하는 레이블 정보
 
 | Level1    |
 | --------- |
@@ -236,7 +244,7 @@ PUT /labels/x36LYo-9
 
 ### Response
 
-- A updated label object
+- 업데이트 된 레이블
 
 | Level1    |
 | --------- |
@@ -282,7 +290,7 @@ DELETE /labels/x36LYo-9
 
 #### Response
 
-- A deleted label object
+- 삭제된 해당 레이블
 
 | Level1    |
 | --------- |
@@ -320,7 +328,7 @@ GET /memos
 
 ### Response
 
-- A list of all memo objects
+- 전체 메모 리스트
 
 | Level1    |
 | --------- |
@@ -381,7 +389,7 @@ POST /memos
 
 #### Response
 
-- A newly created memo object
+- 새롭게 생성된 메모
 
 | Level1    |
 | --------- |
@@ -427,7 +435,7 @@ GET /memos/cYdCczSy
 
 ### Response
 
-- A requested memo object matched to a given ID
+- 특정 id값에 해당하는 메모 정보
 
 | Level1    |
 | --------- |
@@ -487,7 +495,7 @@ PUT /memos/cYdCczSy
 
 ### Response
 
-- A updated memo object
+- 업데이트된 메모 정보
 
 | Level1    |
 | --------- |
@@ -533,7 +541,7 @@ DELETE /memos/cYdCczSy
 
 #### Response
 
-- A deleted memo object
+- 삭제된 메모
 
 | Level1    |
 | --------- |
@@ -581,7 +589,7 @@ GET /labels/z88EVleY/memos
 
 ### Response
 
-- List of memo objects
+- 해당 레이블에 등록되어 있는 메모 리스트
 
 | Level1    |
 | --------- |
@@ -698,7 +706,7 @@ POST /labels/jSxmk9ae/memos
 
 #### Response
 
-- An updated list of memos related to the label
+- 메모가 추가된 레이블 정보
 
 | Level1    |
 | --------- |
@@ -706,27 +714,18 @@ POST /labels/jSxmk9ae/memos
 | updatedAt |
 | createdAt |
 | title     |
-| content   |
+| memoCount |
 
 ### Response Example
 
 ```json
-[
-  {
-    "title": "memo_01",
-    "content": "memo_01_content",
-    "id": "qhnb909u",
-    "createdAt": "2020-03-02T00:49:06.408Z",
-    "updatedAt": "2020-03-02T00:49:06.408Z"
-  },
-  {
-    "title": "memo_02",
-    "content": "memo_02_content",
-    "id": "x_Uuv-D-",
-    "createdAt": "2020-03-02T00:49:19.917Z",
-    "updatedAt": "2020-03-02T00:49:19.917Z"
-  }
-]
+{
+  "title": "label_01_fixed",
+  "id": "z88EVleY",
+  "createdAt": "2020-03-02T00:46:17.247Z",
+  "updatedAt": "2020-03-02T00:48:13.956Z",
+  "memoCount": 2
+}
 ```
 
 ## <span id="relation-remove-memos">Remove Memos</span>
@@ -759,7 +758,7 @@ DELETE /labels/z88EVleY/memos
 
 #### Response
 
-- An updated list of memos related to the label
+- 메모가 삭제된 레이블 정보
 
 | Level1    |
 | --------- |
@@ -767,18 +766,16 @@ DELETE /labels/z88EVleY/memos
 | updatedAt |
 | createdAt |
 | title     |
-| content   |
+| memoCount |
 
 ### Response Example
 
 ```json
-[
-  {
-    "title": "memo_02",
-    "content": "memo_02_content",
-    "id": "x_Uuv-D-",
-    "createdAt": "2020-03-02T00:49:19.917Z",
-    "updatedAt": "2020-03-02T00:49:19.917Z"
-  }
-]
+{
+  "title": "label_01_fixed",
+  "id": "z88EVleY",
+  "createdAt": "2020-03-02T00:46:17.247Z",
+  "updatedAt": "2020-03-02T00:48:13.956Z",
+  "memoCount": 0
+}
 ```
