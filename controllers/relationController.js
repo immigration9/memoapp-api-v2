@@ -5,13 +5,22 @@ const {
   getMemoByMemoId,
   getLabelByLabelId,
 } = require('../utils/relationUtil');
+const httpStatus = require('http-status-codes');
+const { createError, createResponse } = require('../utils/responseUtil');
 
 module.exports = {
   addMemosToLabel: (req, res) => {
     const labelId = req.params.id;
     const { memoIds } = req.body;
 
+    const label = getLabelByLabelId(labelId);
     const parsedMemoIds = JSON.parse(memoIds);
+
+    if (!label) {
+      return res
+        .status(httpStatus.BAD_REQUEST)
+        .send(createError('unable to find designated label'));
+    }
 
     if (parsedMemoIds && parsedMemoIds.length > 0) {
       parsedMemoIds.forEach(memoId => {
@@ -25,20 +34,25 @@ module.exports = {
       });
     }
 
-    const label = getLabelByLabelId(labelId);
-    if (label) {
-      const labelToMemo = getRelationByLabelId(label.id);
-      label.memos = labelToMemo.map(item => getMemoByMemoId(item.memoId)) || [];
-      res.send(label);
-    } else {
-      res.status(500).send('unable to retrieve label data');
-    }
+    const labelToMemo = getRelationByLabelId(labelId) || [];
+    label.memoCount = (
+      labelToMemo.map(item => getMemoByMemoId(item.memoId)) || []
+    ).length;
+
+    return res.status(httpStatus.OK).send(createResponse(label));
   },
   deleteMemosFromLabel: (req, res) => {
     const labelId = req.params.id;
     const { memoIds } = req.body;
 
+    const label = getLabelByLabelId(labelId);
     const parsedMemoIds = JSON.parse(memoIds);
+
+    if (!label) {
+      return res
+        .status(httpStatus.BAD_REQUEST)
+        .send(createError('unable to find designated label'));
+    }
 
     if (parsedMemoIds && parsedMemoIds.length > 0) {
       parsedMemoIds.forEach(memoId => {
@@ -52,13 +66,68 @@ module.exports = {
       });
     }
 
+    const labelToMemo = getRelationByLabelId(labelId) || [];
+    label.memoCount = (
+      labelToMemo.map(item => getMemoByMemoId(item.memoId)) || []
+    ).length;
+
+    return res.status(httpStatus.OK).send(createResponse(label));
+  },
+  getMemosByLabel: (req, res) => {
+    const labelId = req.params.id;
+
     const label = getLabelByLabelId(labelId);
-    if (label) {
-      const labelToMemo = getRelationByLabelId(label.id);
-      label.memos = labelToMemo.map(item => getMemoByMemoId(item.memoId)) || [];
-      res.send(label);
+
+    if (!label) {
+      return res
+        .status(httpStatus.BAD_REQUEST)
+        .send(createError('unable to find designated label'));
+    }
+
+    const relations = getRelationByLabelId(labelId) || [];
+    const memoList = relations.map(({ memoId }) => getMemoByMemoId(memoId));
+
+    if (memoList) {
+      return res.status(httpStatus.OK).send(createResponse(memoList));
     } else {
-      res.status(500).send('unable to retrieve label data');
+      return res
+        .status(httpStatus.INTERNAL_SERVER_ERROR)
+        .send(
+          createError(
+            'unable to retrieve label list',
+            httpStatus.INTERNAL_SERVER_ERROR
+          )
+        );
+    }
+  },
+  getLabelsByMemo: (req, res) => {
+    const memoId = req.params.id;
+
+    const memo = getMemoByMemoId(memoId);
+
+    if (!memo) {
+      return res
+        .status(httpStatus.BAD_REQUEST)
+        .send(createError('unable to find designated memo'));
+    }
+
+    const relations = getRelationByMemoId(memoId) || [];
+
+    const labelList = relations.map(({ labelId }) =>
+      getLabelByLabelId(labelId)
+    );
+
+    if (labelList) {
+      return res.status(httpStatus.OK).send(createResponse(labelList));
+    } else {
+      return res
+        .status(httpStatus.INTERNAL_SERVER_ERROR)
+        .send(
+          createError(
+            'unable to retrieve label list',
+            httpStatus.INTERNAL_SERVER_ERROR
+          )
+        );
     }
   },
 };

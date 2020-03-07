@@ -10,6 +10,7 @@ router.get('/:id', labelController.getLabel);
 router.put('/:id', labelController.updateLabel);
 router.delete('/:id', labelController.deleteLabel);
 
+router.get('/:id/memos', relationController.getMemosByLabel);
 router.post('/:id/memos', relationController.addMemosToLabel);
 router.delete('/:id/memos', relationController.deleteMemosFromLabel);
 
