@@ -31,10 +31,6 @@ PORT=3000 yarn start
 - (추가) 레이블 id값을 통해 relation 테이블에 있는 메모들을 가져올 수 있다.
 - (추가) 메모 / 레이블 삭제시 해당되는 relation 관계도 전부 삭제한다.
 
-# 현재 추가 필요한 사항
-
-- 레이블에 메모 추가 / 삭제시에는 레이블 정보를 리턴하는 것으로
-
 # API Specifications
 
 ## [Label](#label)

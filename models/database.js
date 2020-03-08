@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const low = require('lowdb');
 const FileSync = require('lowdb/adapters/FileSync');
+const Memory = require('lowdb/adapters/Memory');
 
 const dbDirectory = path.join(__dirname, '../db');
 
@@ -13,21 +14,10 @@ if (!fs.existsSync(dbDirectory)) {
 }
 
 const isTest = process.env.ENVIRONMENT === 'test';
-const fileDirectory = path.join(
-  __dirname,
-  `../db/${isTest ? 'test_db' : 'db'}.json`
-);
-
-/**
- * Test Environment Only
- * * remove preexisting test-db file
- */
-if (isTest && fs.existsSync(fileDirectory)) {
-  fs.unlinkSync(fileDirectory);
-}
+const fileDirectory = path.join(__dirname, `../db/db.json`);
 
 const adapter = new FileSync(fileDirectory);
-const db = low(adapter);
+const db = low(isTest ? new Memory() : adapter);
 
 db.defaults({
   labels: [],
