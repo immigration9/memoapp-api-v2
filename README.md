@@ -105,6 +105,18 @@ GET /labels
 ]
 ```
 
+### Error Response
+
+- 500
+
+### Error Response Example
+
+```json
+{
+  "details": "Unable to retrieve data from server"
+}
+```
+
 ## <span id="label-create">Create</span>
 
 ### Summary
@@ -158,6 +170,18 @@ POST /labels
 }
 ```
 
+### Error Response
+
+- 400
+
+### Error Response Example
+
+```json
+{
+  "details": "must provide a valid title"
+}
+```
+
 ## <span id="label-get">Get</span>
 
 ### Summary
@@ -201,6 +225,18 @@ GET /labels/x36LYo-9
   "createdAt": "2020-03-02T22:36:55.011Z",
   "updatedAt": "2020-03-02T22:36:55.011Z",
   "memoCount": 5
+}
+```
+
+### Error Response
+
+- 400
+
+### Error Response Example
+
+```json
+{
+  "details": "invalid label id"
 }
 ```
 
@@ -262,6 +298,18 @@ PUT /labels/x36LYo-9
 }
 ```
 
+### Error Response
+
+- 400
+
+### Error Response Example
+
+```json
+{
+  "details": "unable to find designated label"
+}
+```
+
 ## <span id="label-delete">Delete</span>
 
 ### Summary
@@ -303,6 +351,18 @@ DELETE /labels/x36LYo-9
   "id": "x36LYo-9",
   "createdAt": "2020-03-02T22:36:55.011Z",
   "updatedAt": "2020-03-02T22:44:43.653Z"
+}
+```
+
+### Error Response
+
+- 400
+
+### Error Response Example
+
+```json
+{
+  "details": "unable to find designated label"
 }
 ```
 
@@ -353,6 +413,18 @@ GET /memos
     "updatedAt": "2020-03-02T22:58:48.135Z"
   }
 ]
+```
+
+### Error Response
+
+- 500
+
+### Error Response Example
+
+```json
+{
+  "details": "Unable to retrieve data from server"
+}
 ```
 
 ## <span id="memo-create">Create</span>
@@ -407,6 +479,18 @@ POST /memos
 }
 ```
 
+### Error Response
+
+- 400
+
+### Error Response Example
+
+```json
+{
+  "details": "must provide a valid title"
+}
+```
+
 ## <span id="memo-get">Get</span>
 
 ### Summary
@@ -450,6 +534,18 @@ GET /memos/cYdCczSy
   "id": "cYdCczSy",
   "createdAt": "2020-03-03T00:08:21.065Z",
   "updatedAt": "2020-03-03T00:08:21.065Z"
+}
+```
+
+### Error Response
+
+- 400
+
+### Error Response Example
+
+```json
+{
+  "details": "invalid memo id"
 }
 ```
 
@@ -513,6 +609,18 @@ PUT /memos/cYdCczSy
 }
 ```
 
+### Error Response
+
+- 400
+
+### Error Response Example
+
+```json
+{
+  "details": "unable to find designated memo"
+}
+```
+
 ## <span id="memo-delete">Delete</span>
 
 ### Summary
@@ -556,6 +664,18 @@ DELETE /memos/cYdCczSy
   "id": "cYdCczSy",
   "createdAt": "2020-03-03T00:08:21.065Z",
   "updatedAt": "2020-03-03T00:43:35.220Z"
+}
+```
+
+### Error Response
+
+- 400
+
+### Error Response Example
+
+```json
+{
+  "details": "unable to find designated memo"
 }
 ```
 
@@ -616,6 +736,29 @@ GET /labels/z88EVleY/memos
 ]
 ```
 
+### Error Response
+
+- 400
+- 500
+
+### Error Response Example
+
+- 400
+
+```json
+{
+  "details": "unable to find designated label"
+}
+```
+
+- 500
+
+```json
+{
+  "details": "Unable to retrieve data from server"
+}
+```
+
 ## <span id="relation-label-by-memo">Get Labels by Memo</span>
 
 ### Summary
@@ -666,6 +809,29 @@ GET /memos/qhnb909u/labels
     "updatedAt": "2020-03-02T00:46:31.531Z"
   }
 ]
+```
+
+### Error Response
+
+- 400
+- 500
+
+### Error Response Example
+
+- 400
+
+```json
+{
+  "details": "unable to find designated memo"
+}
+```
+
+- 500
+
+```json
+{
+  "details": "Unable to retrieve data from server"
+}
 ```
 
 ## <span id="relation-add-memos">Add Memos to Label</span>
@@ -724,6 +890,18 @@ POST /labels/jSxmk9ae/memos
 }
 ```
 
+### Error Response
+
+- 400
+
+### Error Response Example
+
+```json
+{
+  "details": "unable to find designated label"
+}
+```
+
 ## <span id="relation-remove-memos">Remove Memos</span>
 
 #### URL
@@ -773,5 +951,17 @@ DELETE /labels/z88EVleY/memos
   "createdAt": "2020-03-02T00:46:17.247Z",
   "updatedAt": "2020-03-02T00:48:13.956Z",
   "memoCount": 0
+}
+```
+
+### Error Response
+
+- 400
+
+### Error Response Example
+
+```json
+{
+  "details": "unable to find designated label"
 }
 ```

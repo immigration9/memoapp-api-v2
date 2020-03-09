@@ -92,12 +92,7 @@ module.exports = {
     } else {
       return res
         .status(httpStatus.INTERNAL_SERVER_ERROR)
-        .send(
-          createError(
-            'unable to retrieve label list',
-            httpStatus.INTERNAL_SERVER_ERROR
-          )
-        );
+        .send(createError('unable to retrieve label list'));
     }
   },
   getLabelsByMemo: (req, res) => {
@@ -122,12 +117,7 @@ module.exports = {
     } else {
       return res
         .status(httpStatus.INTERNAL_SERVER_ERROR)
-        .send(
-          createError(
-            'unable to retrieve label list',
-            httpStatus.INTERNAL_SERVER_ERROR
-          )
-        );
+        .send(createError('unable to retrieve label list'));
     }
   },
 };

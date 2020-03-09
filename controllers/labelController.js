@@ -17,12 +17,7 @@ module.exports = {
     } else {
       return res
         .status(httpStatus.INTERNAL_SERVER_ERROR)
-        .send(
-          createError(
-            'Unable to retrieve data from server',
-            httpStatus.INTERNAL_SERVER_ERROR
-          )
-        );
+        .send(createError('Unable to retrieve data from server'));
     }
   },
   createLabel: (req, res) => {
