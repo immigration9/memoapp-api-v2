@@ -13,7 +13,6 @@ module.exports = {
     const { countOnly } = req.query;
     const memos = db.get('memos').value();
 
-    console.log(countOnly);
     if (memos) {
       if (countOnly) {
         return res.status(httpStatus.OK).send(createResponse(memos.length));
@@ -92,7 +91,6 @@ module.exports = {
 
     if (relations.length > 0) {
       relations.forEach(relation => {
-        console.log(relation);
         const labelRelationCount = getRelationByLabelId(relation.labelId)
           .length;
         db.get('labels')
