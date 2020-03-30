@@ -1,11 +1,7 @@
 const db = require('../models/database');
 const { create, update } = require('../utils/dbUtil');
 const httpStatus = require('http-status-codes');
-const {
-  getRelationByLabelId,
-  getMemoByMemoId,
-  getLabelByLabelId,
-} = require('../utils/relationUtil');
+const { getLabelByLabelId } = require('../utils/relationUtil');
 const { createError, createResponse } = require('../utils/responseUtil');
 
 module.exports = {
@@ -26,7 +22,7 @@ module.exports = {
     if (title) {
       const data = db
         .get('labels')
-        .push(create({ title }))
+        .push(create({ title, memoCount: 0 }))
         .write();
 
       return res
@@ -44,10 +40,6 @@ module.exports = {
     const label = getLabelByLabelId(labelId);
 
     if (label) {
-      const labelToMemo = getRelationByLabelId(label.id);
-      label.memoCount = (
-        labelToMemo.map(item => getMemoByMemoId(item.memoId)) || []
-      ).length;
       return res.status(httpStatus.OK).send(createResponse(label));
     } else {
       return res

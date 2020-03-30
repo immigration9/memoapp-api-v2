@@ -87,22 +87,24 @@ GET /labels
 ### Response Example
 
 ```json
-[
-  {
-    "title": "title_01",
-    "id": "FGj06YRO",
-    "createdAt": "2020-03-02T22:34:15.139Z",
-    "updatedAt": "2020-03-02T22:34:15.139Z",
-    "memoCount": 5
-  },
-  {
-    "title": "title_02",
-    "id": "x36LYo-9",
-    "createdAt": "2020-03-02T22:36:55.011Z",
-    "updatedAt": "2020-03-02T22:36:55.011Z",
-    "memoCount": 3
-  }
-]
+{
+  "data": [
+    {
+      "title": "title_01",
+      "id": "FGj06YRO",
+      "createdAt": "2020-03-02T22:34:15.139Z",
+      "updatedAt": "2020-03-02T22:34:15.139Z",
+      "memoCount": 5
+    },
+    {
+      "title": "title_02",
+      "id": "x36LYo-9",
+      "createdAt": "2020-03-02T22:36:55.011Z",
+      "updatedAt": "2020-03-02T22:36:55.011Z",
+      "memoCount": 3
+    }
+  ]
+}
 ```
 
 ### Error Response
@@ -162,11 +164,13 @@ POST /labels
 
 ```json
 {
-  "title": "title_02",
-  "id": "x36LYo-9",
-  "createdAt": "2020-03-02T22:36:55.011Z",
-  "updatedAt": "2020-03-02T22:36:55.011Z",
-  "memoCount": 0
+  "data": {
+    "title": "title_02",
+    "id": "x36LYo-9",
+    "createdAt": "2020-03-02T22:36:55.011Z",
+    "updatedAt": "2020-03-02T22:36:55.011Z",
+    "memoCount": 0
+  }
 }
 ```
 
@@ -220,11 +224,13 @@ GET /labels/x36LYo-9
 
 ```json
 {
-  "title": "title_02",
-  "id": "x36LYo-9",
-  "createdAt": "2020-03-02T22:36:55.011Z",
-  "updatedAt": "2020-03-02T22:36:55.011Z",
-  "memoCount": 5
+  "data": {
+    "title": "title_02",
+    "id": "x36LYo-9",
+    "createdAt": "2020-03-02T22:36:55.011Z",
+    "updatedAt": "2020-03-02T22:36:55.011Z",
+    "memoCount": 5
+  }
 }
 ```
 
@@ -290,11 +296,13 @@ PUT /labels/x36LYo-9
 
 ```json
 {
-  "title": "title_02_fixed",
-  "id": "x36LYo-9",
-  "createdAt": "2020-03-02T22:36:55.011Z",
-  "updatedAt": "2020-03-02T22:44:43.653Z",
-  "memoCount": 0
+  "data": {
+    "title": "title_02_fixed",
+    "id": "x36LYo-9",
+    "createdAt": "2020-03-02T22:36:55.011Z",
+    "updatedAt": "2020-03-02T22:44:43.653Z",
+    "memoCount": 0
+  }
 }
 ```
 
@@ -347,10 +355,12 @@ DELETE /labels/x36LYo-9
 
 ```json
 {
-  "title": "title_02_fixed",
-  "id": "x36LYo-9",
-  "createdAt": "2020-03-02T22:36:55.011Z",
-  "updatedAt": "2020-03-02T22:44:43.653Z"
+  "data": {
+    "title": "title_02_fixed",
+    "id": "x36LYo-9",
+    "createdAt": "2020-03-02T22:36:55.011Z",
+    "updatedAt": "2020-03-02T22:44:43.653Z"
+  }
 }
 ```
 
@@ -378,6 +388,12 @@ DELETE /labels/x36LYo-9
 
 - GET /memos
 
+### Query Parameters
+
+| Name      | Default | Description                           |
+| --------- | ------- | ------------------------------------- |
+| countOnly | false   | true로 설정시 전체 메모 수만 가져온다 |
+
 ### Request Example
 
 GET /memos
@@ -396,23 +412,27 @@ GET /memos
 
 ### Response Example
 
+- GET /memos?countOnly=false
+
 ```json
-[
-  {
-    "title": "memo_01",
-    "content": "memo_01_content",
-    "id": "uw6GPLgl",
-    "createdAt": "2020-03-02T22:58:43.694Z",
-    "updatedAt": "2020-03-02T22:58:43.694Z"
-  },
-  {
-    "title": "memo_02",
-    "content": "memo_02_content",
-    "id": "bYE0BjHs",
-    "createdAt": "2020-03-02T22:58:48.135Z",
-    "updatedAt": "2020-03-02T22:58:48.135Z"
-  }
-]
+{
+  "data": [
+    {
+      "title": "memo_01",
+      "content": "memo_01_content",
+      "id": "uw6GPLgl",
+      "createdAt": "2020-03-02T22:58:43.694Z",
+      "updatedAt": "2020-03-02T22:58:43.694Z"
+    },
+    {
+      "title": "memo_02",
+      "content": "memo_02_content",
+      "id": "bYE0BjHs",
+      "createdAt": "2020-03-02T22:58:48.135Z",
+      "updatedAt": "2020-03-02T22:58:48.135Z"
+    }
+  ]
+}
 ```
 
 ### Error Response
@@ -718,22 +738,24 @@ GET /labels/z88EVleY/memos
 ### Response Example
 
 ```json
-[
-  {
-    "title": "memo_01",
-    "content": "memo_01_content",
-    "id": "qhnb909u",
-    "createdAt": "2020-03-02T00:49:06.408Z",
-    "updatedAt": "2020-03-02T00:49:06.408Z"
-  },
-  {
-    "title": "memo_02",
-    "content": "memo_02_content",
-    "id": "x_Uuv-D-",
-    "createdAt": "2020-03-02T00:49:19.917Z",
-    "updatedAt": "2020-03-02T00:49:19.917Z"
-  }
-]
+{
+  "data": [
+    {
+      "title": "memo_01",
+      "content": "memo_01_content",
+      "id": "qhnb909u",
+      "createdAt": "2020-03-02T00:49:06.408Z",
+      "updatedAt": "2020-03-02T00:49:06.408Z"
+    },
+    {
+      "title": "memo_02",
+      "content": "memo_02_content",
+      "id": "x_Uuv-D-",
+      "createdAt": "2020-03-02T00:49:19.917Z",
+      "updatedAt": "2020-03-02T00:49:19.917Z"
+    }
+  ]
+}
 ```
 
 ### Error Response
@@ -795,20 +817,22 @@ GET /memos/qhnb909u/labels
 ### Response Example
 
 ```json
-[
-  {
-    "title": "label_01_fixed",
-    "id": "z88EVleY",
-    "createdAt": "2020-03-02T00:46:17.247Z",
-    "updatedAt": "2020-03-02T00:48:13.956Z"
-  },
-  {
-    "title": "label_02",
-    "id": "N_7_c9Tn",
-    "createdAt": "2020-03-02T00:46:31.531Z",
-    "updatedAt": "2020-03-02T00:46:31.531Z"
-  }
-]
+{
+  "data": [
+    {
+      "title": "label_01_fixed",
+      "id": "z88EVleY",
+      "createdAt": "2020-03-02T00:46:17.247Z",
+      "updatedAt": "2020-03-02T00:48:13.956Z"
+    },
+    {
+      "title": "label_02",
+      "id": "N_7_c9Tn",
+      "createdAt": "2020-03-02T00:46:31.531Z",
+      "updatedAt": "2020-03-02T00:46:31.531Z"
+    }
+  ]
+}
 ```
 
 ### Error Response
@@ -882,11 +906,13 @@ POST /labels/jSxmk9ae/memos
 
 ```json
 {
-  "title": "label_01_fixed",
-  "id": "z88EVleY",
-  "createdAt": "2020-03-02T00:46:17.247Z",
-  "updatedAt": "2020-03-02T00:48:13.956Z",
-  "memoCount": 2
+  "data": {
+    "title": "label_01_fixed",
+    "id": "z88EVleY",
+    "createdAt": "2020-03-02T00:46:17.247Z",
+    "updatedAt": "2020-03-02T00:48:13.956Z",
+    "memoCount": 2
+  }
 }
 ```
 
@@ -946,11 +972,13 @@ DELETE /labels/z88EVleY/memos
 
 ```json
 {
-  "title": "label_01_fixed",
-  "id": "z88EVleY",
-  "createdAt": "2020-03-02T00:46:17.247Z",
-  "updatedAt": "2020-03-02T00:48:13.956Z",
-  "memoCount": 0
+  "data": {
+    "title": "label_01_fixed",
+    "id": "z88EVleY",
+    "createdAt": "2020-03-02T00:46:17.247Z",
+    "updatedAt": "2020-03-02T00:48:13.956Z",
+    "memoCount": 0
+  }
 }
 ```
 

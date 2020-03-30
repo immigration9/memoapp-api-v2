@@ -4,6 +4,7 @@ const {
   getRelationByMemoId,
   getMemoByMemoId,
   getLabelByLabelId,
+  getLabelsByLabelIds,
 } = require('../utils/relationUtil');
 const httpStatus = require('http-status-codes');
 const { createError, createResponse } = require('../utils/responseUtil');
@@ -13,8 +14,7 @@ module.exports = {
     const labelId = req.params.id;
     const { memoIds } = req.body;
 
-    const label = getLabelByLabelId(labelId);
-    const parsedMemoIds = JSON.parse(memoIds);
+    let label = getLabelByLabelId(labelId);
 
     if (!label) {
       return res
@@ -22,8 +22,8 @@ module.exports = {
         .send(createError('unable to find designated label'));
     }
 
-    if (parsedMemoIds && parsedMemoIds.length > 0) {
-      parsedMemoIds.forEach(memoId => {
+    if (memoIds && memoIds.length > 0) {
+      memoIds.forEach(memoId => {
         const relations = getRelationByMemoId(memoId);
         const exists = relations.find(relation => relation.labelId === labelId);
         if (!exists) {
@@ -33,11 +33,15 @@ module.exports = {
         }
       });
     }
+    /**
+     * 해당 Label에 memoCount 수정
+     */
+    db.get('labels')
+      .find({ id: labelId })
+      .assign({ memoCount: (getRelationByLabelId(labelId) || []).length })
+      .write();
 
-    const labelToMemo = getRelationByLabelId(labelId) || [];
-    label.memoCount = (
-      labelToMemo.map(item => getMemoByMemoId(item.memoId)) || []
-    ).length;
+    label = getLabelByLabelId(labelId);
 
     return res.status(httpStatus.OK).send(createResponse(label));
   },
@@ -45,8 +49,7 @@ module.exports = {
     const labelId = req.params.id;
     const { memoIds } = req.body;
 
-    const label = getLabelByLabelId(labelId);
-    const parsedMemoIds = JSON.parse(memoIds);
+    let label = getLabelByLabelId(labelId);
 
     if (!label) {
       return res
@@ -54,8 +57,8 @@ module.exports = {
         .send(createError('unable to find designated label'));
     }
 
-    if (parsedMemoIds && parsedMemoIds.length > 0) {
-      parsedMemoIds.forEach(memoId => {
+    if (memoIds && memoIds.length > 0) {
+      memoIds.forEach(memoId => {
         const relations = getRelationByMemoId(memoId);
         const exists = relations.find(relation => relation.labelId === labelId);
         if (exists) {
@@ -66,10 +69,15 @@ module.exports = {
       });
     }
 
-    const labelToMemo = getRelationByLabelId(labelId) || [];
-    label.memoCount = (
-      labelToMemo.map(item => getMemoByMemoId(item.memoId)) || []
-    ).length;
+    /**
+     * 해당 Label에 memoCount 수정
+     */
+    db.get('labels')
+      .find({ id: labelId })
+      .assign({ memoCount: getRelationByLabelId(labelId).length })
+      .write();
+
+    label = getLabelByLabelId(labelId);
 
     return res.status(httpStatus.OK).send(createResponse(label));
   },
@@ -119,5 +127,76 @@ module.exports = {
         .status(httpStatus.INTERNAL_SERVER_ERROR)
         .send(createError('unable to retrieve label list'));
     }
+  },
+  addLabelsToMemo: (req, res) => {
+    const memoId = req.params.id;
+    const { labelIds } = req.body;
+
+    const memo = getMemoByMemoId(memoId);
+
+    if (!memo) {
+      return res
+        .status(httpStatus.BAD_REQUEST)
+        .send(createError('unable to find designated memo'));
+    }
+
+    if (labelIds && labelIds.length > 0) {
+      labelIds.forEach(labelId => {
+        const relations = getRelationByLabelId(labelId);
+        const exists = relations.find(relation => relation.memoId === memoId);
+
+        let relationCount = relations.length;
+        if (!exists) {
+          db.get('labelsToMemos')
+            .push({ labelId, memoId })
+            .write();
+
+          relationCount += 1;
+        }
+
+        db.get('labels')
+          .find({ id: labelId })
+          .assign({ memoCount: relationCount })
+          .write();
+      });
+    }
+
+    const labels = getLabelsByLabelIds(labelIds);
+    return res.status(httpStatus.OK).send(labels);
+  },
+  deleteLabelsFromMemo: (req, res) => {
+    const memoId = req.params.id;
+    const { labelIds } = req.body;
+
+    const memo = getMemoByMemoId(memoId);
+
+    if (!memo) {
+      return res
+        .status(httpStatus.BAD_REQUEST)
+        .send(createError('unable to find designated memo'));
+    }
+
+    if (labelIds && labelIds.length > 0) {
+      labelIds.forEach(labelId => {
+        const relations = getRelationByLabelId(labelId);
+        const exists = relations.find(relation => relation.memoId === memoId);
+        let relationCount = relations.length;
+        if (exists) {
+          db.get('labelsToMemos')
+            .remove({ labelId, memoId })
+            .write();
+
+          relationCount -= 1;
+        }
+
+        db.get('labels')
+          .find({ id: labelId })
+          .assign({ memoCount: relationCount })
+          .write();
+      });
+    }
+
+    const labels = getLabelsByLabelIds(labelIds);
+    return res.status(httpStatus.OK).send(labels);
   },
 };

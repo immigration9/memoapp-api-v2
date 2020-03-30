@@ -1,14 +1,23 @@
 const { create, update } = require('../utils/dbUtil');
-const { getMemoByMemoId } = require('../utils/relationUtil');
+const {
+  getMemoByMemoId,
+  getRelationByLabelId,
+  getRelationByMemoId,
+} = require('../utils/relationUtil');
 const httpStatus = require('http-status-codes');
 const db = require('../models/database');
 const { createError, createResponse } = require('../utils/responseUtil');
 
 module.exports = {
   getMemosList: (req, res) => {
+    const { countOnly } = req.query;
     const memos = db.get('memos').value();
 
+    console.log(countOnly);
     if (memos) {
+      if (countOnly) {
+        return res.status(httpStatus.OK).send(createResponse(memos.length));
+      }
       return res.status(httpStatus.OK).send(createResponse(memos));
     } else {
       return res
@@ -68,7 +77,6 @@ module.exports = {
   },
   deleteMemo: (req, res) => {
     const memoId = req.params.id;
-
     const memo = getMemoByMemoId(memoId);
 
     if (!memo) {
@@ -77,6 +85,26 @@ module.exports = {
         .send(createError('unable to find designated memo'));
     }
 
+    /**
+     * Reduce all memoCount
+     */
+    const relations = getRelationByMemoId(memoId);
+
+    if (relations.length > 0) {
+      relations.forEach(relation => {
+        console.log(relation);
+        const labelRelationCount = getRelationByLabelId(relation.labelId)
+          .length;
+        db.get('labels')
+          .find({ id: relation.labelId })
+          .assign({ memoCount: labelRelationCount - 1 })
+          .write();
+      });
+    }
+
+    /**
+     * Remove Memo
+     */
     db.get('memos')
       .remove({ id: memoId })
       .write();

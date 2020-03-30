@@ -12,6 +12,6 @@ router.delete('/:id', labelController.deleteLabel);
 
 router.get('/:id/memos', relationController.getMemosByLabel);
 router.post('/:id/memos', relationController.addMemosToLabel);
-router.delete('/:id/memos', relationController.deleteMemosFromLabel);
+router.post('/:id/memos/delete', relationController.deleteMemosFromLabel);
 
 module.exports = router;
