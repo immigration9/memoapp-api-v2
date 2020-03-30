@@ -131,10 +131,9 @@ GET /labels
 
 ### Request Body
 
-| Level1  | Required | Default      | Description      |
-| ------- | -------- | ------------ | ---------------- |
-| title   | O        | -            | Title of label   |
-| content | X        | empty string | Content of label |
+| Level1 | Required | Default | Description |
+| ------ | -------- | ------- | ----------- |
+| title  | O        | -       | label title |
 
 ### Request Example
 
@@ -198,9 +197,9 @@ POST /labels
 
 #### Path variable
 
-| Name | Description         |
-| ---- | ------------------- |
-| id   | Id of labels to get |
+| Name | Description |
+| ---- | ----------- |
+| id   | label id    |
 
 ### Request Example
 
@@ -258,15 +257,15 @@ GET /labels/x36LYo-9
 
 #### Path variable
 
-| Name | Description           |
-| ---- | --------------------- |
-| id   | Id of label to update |
+| Name | Description                |
+| ---- | -------------------------- |
+| id   | 수정하고자 하는 label의 id |
 
 ### Request Body
 
-| Level1 | Required | Default | Description    |
-| ------ | -------- | ------- | -------------- |
-| title  | X        | -       | title of label |
+| Level1 | Required | Default | Description |
+| ------ | -------- | ------- | ----------- |
+| title  | X        | -       | label title |
 
 ### Request Example
 
@@ -331,9 +330,9 @@ PUT /labels/x36LYo-9
 
 #### Path variable
 
-| Name | Description           |
-| ---- | --------------------- |
-| id   | Id of label to remove |
+| Name | Description              |
+| ---- | ------------------------ |
+| id   | 지우고자 하는 label의 id |
 
 ### Request Example
 
@@ -458,10 +457,10 @@ GET /memos
 
 #### Parameters
 
-| Level1  | Required | Default      | Description     |
-| ------- | -------- | ------------ | --------------- |
-| title   | O        | -            | Title of memo   |
-| content | X        | empty string | content of memo |
+| Level1  | Required | Default | Description  |
+| ------- | -------- | ------- | ------------ |
+| title   | O        | -       | memo title   |
+| content | X        | ""      | memo content |
 
 ### Request Example
 
@@ -524,9 +523,9 @@ POST /memos
 
 #### Path variable
 
-| Name | Description       |
-| ---- | ----------------- |
-| id   | Id of memo to get |
+| Name | Description |
+| ---- | ----------- |
+| id   | memo id     |
 
 ### Request Example
 
@@ -582,16 +581,16 @@ GET /memos/cYdCczSy
 
 #### Path variable
 
-| Name | Description          |
-| ---- | -------------------- |
-| id   | Id of memo to delete |
+| Name | Description               |
+| ---- | ------------------------- |
+| id   | 수정하고자 하는 memo의 id |
 
 ### Request Body
 
-| Level1  | Required | Default | Description     |
-| ------- | -------- | ------- | --------------- |
-| title   | X        | -       | title of memo   |
-| content | X        | -       | content of memo |
+| Level1  | Required | Default | Description  |
+| ------- | -------- | ------- | ------------ |
+| title   | X        | -       | memo title   |
+| content | X        | -       | memo content |
 
 ### Request Example
 
@@ -655,9 +654,9 @@ PUT /memos/cYdCczSy
 
 #### Path variable
 
-| Name | Description          |
-| ---- | -------------------- |
-| id   | Id of memo to remove |
+| Name | Description             |
+| ---- | ----------------------- |
+| id   | 지우고자 하는 memo의 id |
 
 ### Request Example
 
@@ -805,7 +804,7 @@ GET /memos/qhnb909u/labels
 
 ### Response
 
-- List of label objects
+- label 객체들의 배열
 
 | Level1    |
 | --------- |
