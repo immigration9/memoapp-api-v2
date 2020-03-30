@@ -4,7 +4,6 @@ const {
   getRelationByMemoId,
   getMemoByMemoId,
   getLabelByLabelId,
-  getLabelsByLabelIds,
 } = require('../utils/relationUtil');
 const httpStatus = require('http-status-codes');
 const { createError, createResponse } = require('../utils/responseUtil');
@@ -127,76 +126,5 @@ module.exports = {
         .status(httpStatus.INTERNAL_SERVER_ERROR)
         .send(createError('unable to retrieve label list'));
     }
-  },
-  addLabelsToMemo: (req, res) => {
-    const memoId = req.params.id;
-    const { labelIds } = req.body;
-
-    const memo = getMemoByMemoId(memoId);
-
-    if (!memo) {
-      return res
-        .status(httpStatus.BAD_REQUEST)
-        .send(createError('unable to find designated memo'));
-    }
-
-    if (labelIds && labelIds.length > 0) {
-      labelIds.forEach(labelId => {
-        const relations = getRelationByLabelId(labelId);
-        const exists = relations.find(relation => relation.memoId === memoId);
-
-        let relationCount = relations.length;
-        if (!exists) {
-          db.get('labelsToMemos')
-            .push({ labelId, memoId })
-            .write();
-
-          relationCount += 1;
-        }
-
-        db.get('labels')
-          .find({ id: labelId })
-          .assign({ memoCount: relationCount })
-          .write();
-      });
-    }
-
-    const labels = getLabelsByLabelIds(labelIds);
-    return res.status(httpStatus.OK).send(labels);
-  },
-  deleteLabelsFromMemo: (req, res) => {
-    const memoId = req.params.id;
-    const { labelIds } = req.body;
-
-    const memo = getMemoByMemoId(memoId);
-
-    if (!memo) {
-      return res
-        .status(httpStatus.BAD_REQUEST)
-        .send(createError('unable to find designated memo'));
-    }
-
-    if (labelIds && labelIds.length > 0) {
-      labelIds.forEach(labelId => {
-        const relations = getRelationByLabelId(labelId);
-        const exists = relations.find(relation => relation.memoId === memoId);
-        let relationCount = relations.length;
-        if (exists) {
-          db.get('labelsToMemos')
-            .remove({ labelId, memoId })
-            .write();
-
-          relationCount -= 1;
-        }
-
-        db.get('labels')
-          .find({ id: labelId })
-          .assign({ memoCount: relationCount })
-          .write();
-      });
-    }
-
-    const labels = getLabelsByLabelIds(labelIds);
-    return res.status(httpStatus.OK).send(labels);
   },
 };

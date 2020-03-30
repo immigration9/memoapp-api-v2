@@ -11,8 +11,14 @@ NodeJS, ExpressJS RESTful MemoApp API.
 # DB
 
 typicode의 LowDB를 사용하여 구현되었음. [LowDB](https://github.com/typicode/lowdb)
-서버 시작시 자동으로 DB 파일이 db/db.json로 생성된다.
+서버 시작시 자동으로 DB 파일이 `db/db.json`로 생성된다.
 데이터베이스를 초기화하고 싶을 경우, 해당 파일을 지운 뒤 서버를 재시작하면 정상적으로 초기화된다.
+
+## DB 구조
+
+자동 생성된 db.json 파일에는 `labels` / `memos` / `labelsToMemos` 항목이 생성된다.
+label과 관련된 항목들은 `labels`에 기록되고, memo와 관련된 항목들은 `memos`에 기록된다.
+label과 memo의 관계(relation 항목)는 `labelsToMemos`에 추가된다.
 
 # API
 
@@ -20,16 +26,8 @@ yarn을 사용하여 dependency를 설치한 뒤 서버를 시작해주면 된�
 
 ```bash
 yarn
-PORT=3000 yarn start
+PORT=8080 yarn start
 ```
-
-# 현재 고려된 사항
-
-- (변경) 레이블에 메모가 추가 / 삭제될 경우, 해당 레이블에 대한 정보가 아닌, 업데이트된 메모 리스트만 가져온다.
-- (변경) 레이블 정보를 가져올 때, 별도로 메모 정보는 가져오지 않으며, 연결된 메모 카운트만 가져온다.
-- (추가) 메모 id값을 통해 relation 테이블에 있는 레이블들을 가져올 수 있다
-- (추가) 레이블 id값을 통해 relation 테이블에 있는 메모들을 가져올 수 있다.
-- (추가) 메모 / 레이블 삭제시 해당되는 relation 관계도 전부 삭제한다.
 
 # API Specifications
 
@@ -131,7 +129,7 @@ GET /labels
 
 ### Parameters
 
-#### Request Body
+### Request Body
 
 | Level1  | Required | Default      | Description      |
 | ------- | -------- | ------------ | ---------------- |
@@ -264,7 +262,7 @@ GET /labels/x36LYo-9
 | ---- | --------------------- |
 | id   | Id of label to update |
 
-#### Request Body
+### Request Body
 
 | Level1 | Required | Default | Description    |
 | ------ | -------- | ------- | -------------- |
@@ -322,7 +320,8 @@ PUT /labels/x36LYo-9
 
 ### Summary
 
-특정 레이블을 삭제한다
+특정 레이블을 삭제한다.
+다른 메모와 연결되어 있는 경우, 해당 연결 정보도 삭제한다.
 
 ### URL
 
@@ -336,11 +335,11 @@ PUT /labels/x36LYo-9
 | ---- | --------------------- |
 | id   | Id of label to remove |
 
-#### Request Example
+### Request Example
 
 DELETE /labels/x36LYo-9
 
-#### Response
+### Response
 
 - 삭제된 해당 레이블
 
@@ -464,7 +463,7 @@ GET /memos
 | title   | O        | -            | Title of memo   |
 | content | X        | empty string | content of memo |
 
-#### Request Example
+### Request Example
 
 POST /memos
 
@@ -475,7 +474,7 @@ POST /memos
 }
 ```
 
-#### Response
+### Response
 
 - 새롭게 생성된 메모
 
@@ -587,7 +586,7 @@ GET /memos/cYdCczSy
 | ---- | -------------------- |
 | id   | Id of memo to delete |
 
-#### Request Body
+### Request Body
 
 | Level1  | Required | Default | Description     |
 | ------- | -------- | ------- | --------------- |
@@ -645,7 +644,8 @@ PUT /memos/cYdCczSy
 
 ### Summary
 
-특정 메모를 삭제한다
+특정 메모를 삭제한다.
+다른 레이블과 연결되어 있는 경우, 해당 연결 정보도 삭제한다.
 
 #### URL
 
@@ -659,11 +659,11 @@ PUT /memos/cYdCczSy
 | ---- | -------------------- |
 | id   | Id of memo to remove |
 
-#### Request Example
+### Request Example
 
 DELETE /memos/cYdCczSy
 
-#### Response
+### Response
 
 - 삭제된 메모
 
@@ -717,7 +717,7 @@ Label id 값으로 해당 label에 등록되어 있는 memo들을 가져온다.
 
 | Name | Description |
 | ---- | ----------- |
-| id   | Id of label |
+| id   | label id    |
 
 ### Request Example
 
@@ -797,7 +797,7 @@ Memo id 값으로 해당 memo에 등록되어 있는 label들을 가져온다.
 
 | Name | Description |
 | ---- | ----------- |
-| id   | Id of memo  |
+| id   | memo id     |
 
 ### Request Example
 
@@ -813,6 +813,7 @@ GET /memos/qhnb909u/labels
 | updatedAt |
 | createdAt |
 | title     |
+| memoCount |
 
 ### Response Example
 
@@ -823,13 +824,15 @@ GET /memos/qhnb909u/labels
       "title": "label_01_fixed",
       "id": "z88EVleY",
       "createdAt": "2020-03-02T00:46:17.247Z",
-      "updatedAt": "2020-03-02T00:48:13.956Z"
+      "updatedAt": "2020-03-02T00:48:13.956Z",
+      "memoCount": 5
     },
     {
       "title": "label_02",
       "id": "N_7_c9Tn",
       "createdAt": "2020-03-02T00:46:31.531Z",
-      "updatedAt": "2020-03-02T00:46:31.531Z"
+      "updatedAt": "2020-03-02T00:46:31.531Z",
+      "memoCount": 3
     }
   ]
 }
@@ -870,17 +873,17 @@ Label에 memo들을 등록한다.
 
 #### Path variable
 
-| Name | Description                 |
-| ---- | --------------------------- |
-| id   | Id of label to add memos to |
+| Name | Description              |
+| ---- | ------------------------ |
+| id   | memo가 추가될 label의 id |
 
 #### Parameters
 
-| Level1  | Required | Default | Description       |
-| ------- | -------- | ------- | ----------------- |
-| memoIds | X        | -       | array of memo IDs |
+| Level1  | Required | Default | Description  |
+| ------- | -------- | ------- | ------------ |
+| memoIds | X        | -       | memo id 배열 |
 
-#### Request Example
+### Request Example
 
 POST /labels/jSxmk9ae/memos
 
@@ -890,7 +893,7 @@ POST /labels/jSxmk9ae/memos
 }
 ```
 
-#### Response
+### Response
 
 - 메모가 추가된 레이블 정보
 
@@ -928,27 +931,31 @@ POST /labels/jSxmk9ae/memos
 }
 ```
 
-## <span id="relation-remove-memos">Remove Memos</span>
+## <span id="relation-remove-memos">Remove Memos from Label</span>
 
-#### URL
+### Summary
 
-- DELETE /labels/:id/memos
+Label에 등록되어 있는 memo들을 삭제한다.
+
+### URL
+
+- POST /labels/:id/memos/delete
 
 #### Path variable
 
-| Name | Description                      |
-| ---- | -------------------------------- |
-| ID   | Id of label to remove memos from |
+| Name | Description              |
+| ---- | ------------------------ |
+| ID   | memo들을 제거할 label id |
 
 #### Parameters
 
-| Level1  | Required | Default | Description       |
-| ------- | -------- | ------- | ----------------- |
-| memoIds | X        | -       | array of memo IDs |
+| Level1  | Required | Default | Description  |
+| ------- | -------- | ------- | ------------ |
+| memoIds | X        | -       | memo id 배열 |
 
-#### Request Example
+### Request Example
 
-DELETE /labels/z88EVleY/memos
+POST /labels/z88EVleY/memos/delete
 
 ```json
 {
@@ -956,7 +963,7 @@ DELETE /labels/z88EVleY/memos
 }
 ```
 
-#### Response
+### Response
 
 - 메모가 삭제된 레이블 정보
 
