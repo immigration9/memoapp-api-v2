@@ -114,6 +114,6 @@ module.exports = {
       .remove({ memoId })
       .write();
 
-    return res.status(httpStatus.OK).send(createResponse(memo));
+    return res.status(httpStatus.OK).send(createResponse());
   },
 };

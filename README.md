@@ -664,26 +664,12 @@ DELETE /memos/cYdCczSy
 
 ### Response
 
-- 삭제된 메모
-
-| Level1    |
-| --------- |
-| id        |
-| updatedAt |
-| createdAt |
-| title     |
-| content   |
+- 없음
 
 ### Response Example
 
 ```json
-{
-  "title": "memo_01_fixed",
-  "content": "memo_01_content_fixed",
-  "id": "cYdCczSy",
-  "createdAt": "2020-03-03T00:08:21.065Z",
-  "updatedAt": "2020-03-03T00:43:35.220Z"
-}
+{}
 ```
 
 ### Error Response
